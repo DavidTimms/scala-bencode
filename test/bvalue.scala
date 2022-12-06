@@ -2,7 +2,7 @@ package net.mooli.bencode
 
 import java.nio.charset.StandardCharsets.ISO_8859_1
 
-class BValueTest extends org.scalatest.FunSpec {
+class BValueTest extends org.scalatest.funspec.AnyFunSpec {
 
   // Does bencode decoding and encoding work?
   describe("net.mooli.bencode.BValue encode/decode") {
@@ -27,7 +27,7 @@ class BValueTest extends org.scalatest.FunSpec {
         BDictionary(
           "publisher.location" -> "home",
           "publisher-webpage" -> "www.example.com",
-          "publisher" -> "bob"
+          "publisher" -> "bob",
         ),
       "de" -> BDictionary(),
       // Now some local tests
@@ -35,11 +35,11 @@ class BValueTest extends org.scalatest.FunSpec {
       "2:Â£" -> BString("£"),
       "d2:Â£2:Â£e" -> BDictionary("£" -> "£"),
       // correct sort order for UTF-8 keys
-      "d2:GBle2:Â£lee" -> BDictionary("GB" -> BList(), "£" -> BList())
+      "d2:GBle2:Â£lee" -> BDictionary("GB" -> BList(), "£" -> BList()),
     )
     for ((printable, tree) <- tests) {
       val bencoded: Array[Byte] = printable getBytes ISO_8859_1
-      val prettyBencoded = bencoded map Util.escaped mkString ("\"", "", "\"")
+      val prettyBencoded = bencoded map Util.escaped mkString("\"", "", "\"")
       it(s"can decode $prettyBencoded") {
         val i = bencoded.toIterator
         val testTree = BValue.read(i)
@@ -65,7 +65,7 @@ class BValueTest extends org.scalatest.FunSpec {
       "BList(1, 2, 3)" -> BList(1, 2, 3),
       "BDictionary()" -> BDictionary(),
       """BDictionary("0" -> "zero", "1" -> 2, "3" -> 4)"""
-        -> BDictionary("1" -> 2, "3" -> 4, "0" -> "zero")
+        -> BDictionary("1" -> 2, "3" -> 4, "0" -> "zero"),
     )
     for ((repr, tree) <- tests) {
       it(s"can toString to $repr") {
@@ -84,7 +84,7 @@ class BValueTest extends org.scalatest.FunSpec {
       "coder" -> "codex",
       "coder" -> "cover",
       // check sort is *unsigned*
-      "\u007f\u00ff" -> "\u0080"
+      "\u007f\u00ff" -> "\u0080",
     )
     for ((lowerStr, higherStr) <- tests) {
       import java.nio.charset.StandardCharsets.ISO_8859_1

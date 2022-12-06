@@ -15,6 +15,7 @@ project/plugins/project/
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+.bsp
 .DS_Store
 ._*
 

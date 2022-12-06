@@ -1,6 +1,6 @@
 package net.mooli.bencode
 
-class ExtractorTests extends org.scalatest.FunSpec {
+class ExtractorTests extends org.scalatest.funspec.AnyFunSpec {
 
   describe("net.mooli.bencode.BInt") {
     it("can extract ints") {

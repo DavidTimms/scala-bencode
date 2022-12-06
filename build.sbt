@@ -1,18 +1,18 @@
 lazy val commonSettings = Seq(
   organization := "net.mooli",
-  scalaVersion := "2.12.6",
-  scalacOptions in (Compile, doc) ++= Seq(
+  scalaVersion := "3.2.1",
+  Compile / doc / scalacOptions ++= Seq(
     "-diagrams",
     "-diagrams-dot-path", "/Users/abuse/bin/dot-hide-warnings",
-    "-groups"
+    "-groups",
   ),
-  libraryDependencies ++=
-    "org.scalactic" %% "scalactic" % "3.0.5" % "test" ::
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test" ::
-    Nil,
-  scalaSource in Compile := ( baseDirectory(_ / "src") ).value,
-  scalaSource in Test := ( baseDirectory(_ / "test") ).value,
-  )
+  libraryDependencies ++= List(
+    "org.scalactic" %% "scalactic" % "3.2.14", // % "Test",
+    "org.scalatest" %% "scalatest" % "3.2.14", // % "Test",
+  ),
+  Compile / scalaSource := (baseDirectory(_ / "src")).value,
+  Test / scalaSource := (baseDirectory(_ / "test")).value,
+)
 
 lazy val bencode = (project in file("."))
   .settings(commonSettings: _*)

@@ -19,12 +19,15 @@
 // WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 package net.mooli.bencode
+
 import scala.language.implicitConversions
 
-import util.{ Try, Failure, Success }
+import util.{Try, Failure, Success}
 
 private[bencode] object Util {
+
   import java.nio.charset.StandardCharsets.UTF_8
+
   // Windows often emits CP1252 and calls it Latin-1. It's a superset, so we can safely decode
   // Latin-1 using CP1252 and have it still work.
   lazy val CP1252 = java.nio.charset.Charset.forName("cp1252")
@@ -34,19 +37,19 @@ private[bencode] object Util {
 
   def decodeUTF8(x: Array[Byte]): Try[String] = new String(x, UTF_8) match {
     case s if s contains '\uFFFD' => decodeFailure
-    case s                        => Success(s)
+    case s => Success(s)
   }
 
   def decodeCP1252(x: Array[Byte]): Try[String] = new String(x, CP1252) match {
     case s if s contains '\uFFFD' => decodeFailure
-    case s                        => Success(s)
+    case s => Success(s)
   }
 
   def escaped(c: Byte): String = c & 255 match {
-    case '\n'                    => "\\n"
-    case '"'                     => "\\\""
+    case '\n' => "\\n"
+    case '"' => "\\\""
     case c if c >= 32 & c <= 126 => "%c" format c
-    case c                       => "\\%03o" format c
+    case c => "\\%03o" format c
   }
 
 }
@@ -56,7 +59,7 @@ class DecodeException(s: String) extends java.lang.Exception(s)
 
 /** A Builder-like type used by [[BValue.write]] for serialising bencoded data.
  *
- *  @group generating
+ * @group generating
  */
 // This class exists for a couple of reasons. The first is that it has a simpler API than a regular
 // Builder, and so is easier to adapt to. The second is that it enables implicit conversions to it,
@@ -65,13 +68,17 @@ class DecodeException(s: String) extends java.lang.Exception(s)
 trait BBuilder {
   /** adds the byte to the builder */
   def +=(b: Byte): this.type // scalastyle:ignore method.name
+
   /** appends the bytes to the builder */
-  def ++=(bs: Array[Byte]): this.type = { bs foreach this.+=; this } // scalastyle:ignore method.name
+  def ++=(bs: Array[Byte]): this.type = {
+    bs foreach this.+=;
+    this
+  } // scalastyle:ignore method.name
 }
 
 /** Factory for [[BBuilder]]s.
  *
- *  @group generating
+ * @group generating
  */
 object BBuilder {
   /** Implicit any-to-BBuilder factory via ToBBuilder typeclass. */
@@ -80,7 +87,7 @@ object BBuilder {
 
 /** An Iterator-like type used by [[BValue#read]] for deserialising bencoded data.
  *
- *  @group parsing
+ * @group parsing
  */
 // Similar to BBuilder, this class mainly exists to provide a potentially more efficient nextSeq
 // implementation, and for easier implicit conversions for BValue#read.
@@ -90,17 +97,19 @@ trait BIterator {
 
   /** Reads the next `length` bytes from the sequence.
    *
-   *  The default implementation assembles the array by calling [[.next]] `length` times. You are
-   *  encouraged to replace this with a more efficient implementation if your underlying data source
-   *  supports it.
+   * The default implementation assembles the array by calling [[.next]] `length` times. You are
+   * encouraged to replace this with a more efficient implementation if your underlying data source
+   * supports it.
    */
-  def nextSeq(length: Int): Array[Byte] = Array.fill(length) { this.next() }
+  def nextSeq(length: Int): Array[Byte] = Array.fill(length) {
+    this.next()
+  }
 
 }
 
 /** Factory for [[BIterator]]s.
  *
- *  @group parsing
+ * @group parsing
  */
 object BIterator {
   /** Implicit any-to-BIterator factory via ToBIterator typeclass. */
